@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ShadowContainer extends StatelessWidget {
-  double height, width;
-  Widget child;
+  final double height, width;
+  final Widget child;
 
   ShadowContainer({
     super.key,
@@ -11,26 +11,29 @@ class ShadowContainer extends StatelessWidget {
     required this.width,
     required this.child,
   });
-  late double _deviceHeight, _deviceWidth;
 
   @override
   Widget build(BuildContext context) {
-    _deviceHeight = MediaQuery.of(context).size.height;
-    _deviceWidth = MediaQuery.of(context).size.width;
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 5,
-          ),
-        ],
+    // Get the device height and width from MediaQuery
+    
+
+    // Constrain the Container's size based on device dimensions
+    return SizedBox(
+      height:  height, // Constrain the height
+      width:  width,    // Constrain the width
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 5,
+            ),
+          ],
+        ),
+        child: child,
       ),
-      height: _deviceHeight! * height,
-      width: _deviceWidth! * width,
-      child: child,
     );
   }
 }
