@@ -1,8 +1,9 @@
 import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ibmi/pages/historyPage.dart';
 import 'package:ibmi/widgets/shadowContainer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Homepage extends StatefulWidget {
   Homepage({super.key});
@@ -34,13 +35,14 @@ class _HomepageState extends State<Homepage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _ageSelecter(),
-                  _weightSelecter(),
+                  _ageSelector(),
+                  _weightSelector(),
                 ],
               ),
               _heightSelector(),
               _genderSelector(),
               _calculateBmiBtn(),
+              // _historyButton(),
             ],
           ),
         ),
@@ -48,7 +50,7 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  Widget _ageSelecter() {
+  Widget _ageSelector() {
     return ShadowContainer(
       height: _deviceHeight * 0.18,
       width: _deviceHeight * 0.18,
@@ -65,14 +67,13 @@ class _HomepageState extends State<Homepage> {
             _age.toString(),
             style: const TextStyle(
               fontSize: 35,
-              fontWeight: FontWeight.w6 00,
+              fontWeight: FontWeight.w600,
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Expanded(
-                // Constrain the width of the button
                 child: CupertinoDialogAction(
                   onPressed: () {
                     if (_age > 0) {
@@ -88,9 +89,7 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
               ),
-              const SizedBox(width: 10), // Spacing between buttons
               Expanded(
-                // Constrain the width of the button
                 child: CupertinoDialogAction(
                   onPressed: () {
                     setState(() {
@@ -110,7 +109,7 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  Widget _weightSelecter() {
+  Widget _weightSelector() {
     return ShadowContainer(
       height: _deviceHeight * 0.18,
       width: _deviceHeight * 0.18,
@@ -127,14 +126,13 @@ class _HomepageState extends State<Homepage> {
             _weight.toString(),
             style: const TextStyle(
               fontSize: 35,
-              fontWeight: FontWeight.w6 00,
+              fontWeight: FontWeight.w600,
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Expanded(
-                // Constrain the width of the button
                 child: CupertinoDialogAction(
                   onPressed: () {
                     if (_weight > 0) {
@@ -150,9 +148,7 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
               ),
-              const SizedBox(width: 10), // Spacing between buttons
               Expanded(
-                // Constrain the width of the button
                 child: CupertinoDialogAction(
                   onPressed: () {
                     setState(() {
@@ -172,8 +168,8 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  double roundToTwoDecimals(double value) {
-    return (value * 10).round() / 10; // Rounds the value to two decimal places
+  double roundToOneDecimal(double value) {
+    return (value * 10).round() / 10; // Rounds the value to one decimal place
   }
 
   Widget _heightSelector() {
@@ -190,22 +186,19 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           Text(
-            roundToTwoDecimals(_height)
-                .toString(), // Display the rounded height
+            roundToOneDecimal(_height).toString(),
             style: const TextStyle(
               fontSize: 35,
-              fontWeight: FontWeight.w6 00,
+              fontWeight: FontWeight.w600,
             ),
           ),
           CupertinoSlider(
-            value: roundToTwoDecimals(
-                _height), // Use the rounded height for the slider
+            value: _height,
             min: 0,
             max: 96,
             onChanged: (_value) {
               setState(() {
-                _height =
-                    _value; // Update _height with the new value from the slider
+                _height = _value;
               });
             },
           ),
@@ -228,16 +221,17 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           CupertinoSlidingSegmentedControl(
-              groupValue: _gender,
-              children: {
-                0: Text('Male'),
-                1: Text('Female'),
-              },
-              onValueChanged: (_value) {
-                setState(() {
-                  _gender = _value as int;
-                });
-              })
+            groupValue: _gender,
+            children: const {
+              0: Text('Male'),
+              1: Text('Female'),
+            },
+            onValueChanged: (_value) {
+              setState(() {
+                _gender = _value as int;
+              });
+            },
+          ),
         ],
       ),
     );
@@ -253,9 +247,64 @@ class _HomepageState extends State<Homepage> {
       onPressed: () {
         if (_height > 0 && _weight > 0 && _age > 0) {
           double _bmi = 703 * (_weight / pow(_height, 2));
-          print(_bmi);
+          showDialogBox(_bmi);
         }
       },
     );
+  }
+
+  void showDialogBox(double _bmi) {
+    String _status;
+    if (_bmi < 18.5) {
+      _status = "Underweight";
+    } else if (_bmi >= 18.5 && _bmi < 25) {
+      _status = "Normal";
+    } else if (_bmi >= 25 && _bmi <= 30) {
+      _status = "Overweight";
+    } else {
+      _status = "Obese";
+    }
+
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext _context) {
+        return CupertinoAlertDialog(
+          title: Text(_status),
+          content: Text(_bmi.toStringAsFixed(2)),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text('OK'),
+              onPressed: () {
+                _saveResult(_bmi.toString(), _status);
+                Navigator.pop(_context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _historyButton() {
+    return CupertinoButton(
+      color: Colors.grey,
+      child: const Text(
+        'History',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(builder: (context) => Historypage()),
+        );
+      },
+    );
+  }
+
+  void _saveResult(String _bmi, String _status) async {
+    final preference = await SharedPreferences.getInstance();
+    await preference.setString('date', DateTime.now().toString());
+    await preference.setStringList('data', <String>[_bmi, _status]);
+    print('result saved');
   }
 }

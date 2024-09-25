@@ -20,7 +20,6 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (BuildContext _context) => Mainpage(),
-        '/history': (BuildContext _context) => Historypage(),
       },
     );
   }

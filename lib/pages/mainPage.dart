@@ -34,6 +34,7 @@ class _MainpageState extends State<Mainpage> {
               BottomNavigationBarItem(
                 icon: Icon(CupertinoIcons.person),
                 label: 'history',
+                
               ),
             ],
           ),
