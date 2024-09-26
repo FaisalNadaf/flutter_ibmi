@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ibmi/pages/historyPage.dart';
+import 'package:ibmi/utils/calculate.dart';
 import 'package:ibmi/widgets/shadowContainer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,7 +14,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   int _age = 18;
-  int _weight = 140;
+  double _weight = 160;
   double _height = 70;
   int _gender = 0;
 
@@ -52,7 +53,7 @@ class _HomepageState extends State<Homepage> {
 
   Widget _ageSelector() {
     return ShadowContainer(
-      height: _deviceHeight * 0.18,
+      height: _deviceHeight * 0.2,
       width: _deviceHeight * 0.18,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -111,7 +112,7 @@ class _HomepageState extends State<Homepage> {
 
   Widget _weightSelector() {
     return ShadowContainer(
-      height: _deviceHeight * 0.18,
+      height: _deviceHeight * 0.2,
       width: _deviceHeight * 0.18,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -123,7 +124,7 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           Text(
-            _weight.toString(),
+            _weight.toInt().toString(), // Display weight as an integer
             style: const TextStyle(
               fontSize: 35,
               fontWeight: FontWeight.w600,
@@ -134,10 +135,11 @@ class _HomepageState extends State<Homepage> {
             children: [
               Expanded(
                 child: CupertinoDialogAction(
+                  key: const Key('weight_minus'),
                   onPressed: () {
                     if (_weight > 0) {
                       setState(() {
-                        _weight--;
+                        _weight -= 1;
                       });
                     }
                   },
@@ -150,9 +152,10 @@ class _HomepageState extends State<Homepage> {
               ),
               Expanded(
                 child: CupertinoDialogAction(
+                  key: const Key('weight_plus'),
                   onPressed: () {
                     setState(() {
-                      _weight++;
+                      _weight += 1;
                     });
                   },
                   child: const Icon(
@@ -246,7 +249,7 @@ class _HomepageState extends State<Homepage> {
       ),
       onPressed: () {
         if (_height > 0 && _weight > 0 && _age > 0) {
-          double _bmi = 703 * (_weight / pow(_height, 2));
+          double _bmi = calculateBMI(_weight, _height);
           showDialogBox(_bmi);
         }
       },
