@@ -14,15 +14,15 @@ void main() {
       );
       
       // Find the + button
-      var _weightIncrementButton = find.byKey(Key('weight_plus'));
+      var weightIncrementButton = find.byKey(const Key('weight_plus'));
 
       // Act: Tap the + button
-      await tester.tap(_weightIncrementButton);
+      await tester.tap(weightIncrementButton);
       await tester.pumpAndSettle(); // Ensure the UI rebuilds
 
       // Assert: Verify the incremented value
-      var _text = find.text('161');
-      expect(_text, findsOneWidget);
+      var text = find.text('161');
+      expect(text, findsOneWidget);
     },
   );
 
@@ -37,15 +37,15 @@ void main() {
       );
       
       // Find the - button
-      var _weightDecrementButton = find.byKey(Key('weight_minus'));
+      var weightDecrementButton = find.byKey(const Key('weight_minus'));
 
       // Act: Tap the - button
-      await tester.tap(_weightDecrementButton);
+      await tester.tap(weightDecrementButton);
       await tester.pumpAndSettle(); // Ensure the UI rebuilds
 
       // Assert: Verify the decremented value
-      var _text = find.text('159');
-      expect(_text, findsOneWidget);
+      var text = find.text('159');
+      expect(text, findsOneWidget);
     },
   );
 }

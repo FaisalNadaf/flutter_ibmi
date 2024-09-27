@@ -5,7 +5,7 @@ class ShadowContainer extends StatelessWidget {
   final double height, width;
   final Widget child;
 
-  ShadowContainer({
+  const ShadowContainer({
     super.key,
     required this.height,
     required this.width,

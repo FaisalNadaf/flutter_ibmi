@@ -6,6 +6,8 @@ import 'package:ibmi/widgets/shadowContainer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Historypage extends StatefulWidget {
+  const Historypage({super.key});
+
   @override
   _HistorypageState createState() => _HistorypageState();
 }
@@ -36,7 +38,7 @@ class _HistorypageState extends State<Historypage> {
     _deviceWidth = MediaQuery.of(context).size.width;
 
     if (_date != null && _data != null) {
-      DateTime _parseDate = DateTime.parse(_date!);
+      DateTime parseDate = DateTime.parse(_date!);
       return Center(
         child: ShadowContainer(
           height: _deviceHeight * 0.26,
@@ -46,14 +48,14 @@ class _HistorypageState extends State<Historypage> {
             children: [
               Text(
                 _data![1],
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 35,
                 ),
               ),
               Text(
-                '${_parseDate.day}/${_parseDate.month}/${_parseDate.year}',
-                style: TextStyle(
+                '${parseDate.day}/${parseDate.month}/${parseDate.year}',
+                style: const TextStyle(
                   fontWeight: FontWeight.w500,
                 ),
               ),

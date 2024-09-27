@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       title: 'IBMI',
       initialRoute: '/',
       routes: {
-        '/': (BuildContext _context) => Mainpage(),
+        '/': (BuildContext context) => const Mainpage(),
       },
     );
   }

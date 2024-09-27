@@ -19,7 +19,7 @@ class _MainpageState extends State<Mainpage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+      navigationBar: const CupertinoNavigationBar(
         middle: Text(
           'IBMI',
         ),

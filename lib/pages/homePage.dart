@@ -5,9 +5,10 @@ import 'package:ibmi/pages/historyPage.dart';
 import 'package:ibmi/utils/calculate.dart';
 import 'package:ibmi/widgets/shadowContainer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:developer' as developer;
 
 class Homepage extends StatefulWidget {
-  Homepage({super.key});
+  const Homepage({super.key});
   @override
   State<Homepage> createState() => _HomepageState();
 }
@@ -26,7 +27,7 @@ class _HomepageState extends State<Homepage> {
     _deviceWidth = MediaQuery.of(context).size.width;
     return CupertinoPageScaffold(
       child: Center(
-        child: Container(
+        child: SizedBox(
           height: _deviceHeight * 0.85,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -76,6 +77,7 @@ class _HomepageState extends State<Homepage> {
             children: [
               Expanded(
                 child: CupertinoDialogAction(
+                  key: const Key('age_minus'),
                   onPressed: () {
                     if (_age > 0) {
                       setState(() {
@@ -92,6 +94,7 @@ class _HomepageState extends State<Homepage> {
               ),
               Expanded(
                 child: CupertinoDialogAction(
+                  key: const Key('age_plus'),
                   onPressed: () {
                     setState(() {
                       _age++;
@@ -199,9 +202,9 @@ class _HomepageState extends State<Homepage> {
             value: _height,
             min: 0,
             max: 96,
-            onChanged: (_value) {
+            onChanged: (value) {
               setState(() {
-                _height = _value;
+                _height = value;
               });
             },
           ),
@@ -229,9 +232,9 @@ class _HomepageState extends State<Homepage> {
               0: Text('Male'),
               1: Text('Female'),
             },
-            onValueChanged: (_value) {
+            onValueChanged: (value) {
               setState(() {
-                _gender = _value as int;
+                _gender = value as int;
               });
             },
           ),
@@ -249,37 +252,37 @@ class _HomepageState extends State<Homepage> {
       ),
       onPressed: () {
         if (_height > 0 && _weight > 0 && _age > 0) {
-          double _bmi = calculateBMI(_weight, _height);
-          showDialogBox(_bmi);
+          double bmi = calculateBMI(_weight, _height);
+          showDialogBox(bmi);
         }
       },
     );
   }
 
-  void showDialogBox(double _bmi) {
-    String _status;
-    if (_bmi < 18.5) {
-      _status = "Underweight";
-    } else if (_bmi >= 18.5 && _bmi < 25) {
-      _status = "Normal";
-    } else if (_bmi >= 25 && _bmi <= 30) {
-      _status = "Overweight";
+  void showDialogBox(double bmi) {
+    String status;
+    if (bmi < 18.5) {
+      status = "Underweight";
+    } else if (bmi >= 18.5 && bmi < 25) {
+      status = "Normal";
+    } else if (bmi >= 25 && bmi <= 30) {
+      status = "Overweight";
     } else {
-      _status = "Obese";
+      status = "Obese";
     }
 
     showCupertinoDialog(
       context: context,
-      builder: (BuildContext _context) {
+      builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text(_status),
-          content: Text(_bmi.toStringAsFixed(2)),
+          title: Text(status),
+          content: Text(bmi.toStringAsFixed(2)),
           actions: [
             CupertinoDialogAction(
               child: const Text('OK'),
               onPressed: () {
-                _saveResult(_bmi.toString(), _status);
-                Navigator.pop(_context);
+                _saveResult(bmi.toString(), status);
+                Navigator.pop(context);
               },
             ),
           ],
@@ -304,10 +307,11 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  void _saveResult(String _bmi, String _status) async {
+  void _saveResult(String bmi, String status) async {
     final preference = await SharedPreferences.getInstance();
     await preference.setString('date', DateTime.now().toString());
-    await preference.setStringList('data', <String>[_bmi, _status]);
+    await preference.setStringList('data', <String>[bmi, status]);
     print('result saved');
+        developer.log("\x1B[32mBMI Result Saved!\x1B[0m");
   }
 }

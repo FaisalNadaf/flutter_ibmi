@@ -22,8 +22,8 @@ void main() {
   test('Given url When calculateBMIAsync invoked Then correct BMI returned',
       () async {
     //Arrange
-    final _dioMock = DioMock();
-    when(() => _dioMock.get('https://jsonkeeper.com/b/AKFA')).thenAnswer(
+    final dioMock = DioMock();
+    when(() => dioMock.get('https://jsonkeeper.com/b/AKFA')).thenAnswer(
       (_) => Future.value(
         Response(
           requestOptions: RequestOptions(path: 'https://jsonkeeper.com/b/AKFA'),
@@ -34,8 +34,8 @@ void main() {
       ),
     );
     //Act
-    var _result = await calculateBMIAsync(_dioMock);
+    var result = await calculateBMIAsync(dioMock);
     //Assert
-    expect(_result, 22.375578703703706);
+    expect(result, 22.375578703703706);
   });
 }
